@@ -212,3 +212,6 @@ uv run run_ingestion.py
 
 - **Result:**  
   Retrieves the exact paragraph from a 50-page PDF using semantic similarity  
+
+  ## 📄 License
+This project is licensed under the MIT License - see the LICENSE file for details.
