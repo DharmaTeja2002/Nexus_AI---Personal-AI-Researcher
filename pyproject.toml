@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "asyncpg>=0.31.0",
     "camelot-py[cv]>=1.0.9",
     "moviepy>=1.0.3",
     "openai-whisper>=20250625",
@@ -25,6 +26,7 @@ dependencies = [
     "python-magic>=0.4.27",
     "python-pptx>=1.0.2",
     "sentence-transformers>=5.4.1",
+    "sqlalchemy>=2.0.49",
 ]
 
 
