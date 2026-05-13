@@ -1,7 +1,7 @@
 import zipfile
+import uuid
 from pathlib import Path
 from typing import List
-from src.ingestion.schemas import DocumentElement
 
 class ArchiveParser:
     """
@@ -18,8 +18,9 @@ class ArchiveParser:
         """
         extracted_files = []
         try:
-            # Create a unique folder for this specific zip to avoid collisions
-            zip_folder = self.temp_dir / path.stem
+            # Create a guaranteed unique folder for this specific zip to avoid collisions
+            unique_id = uuid.uuid4().hex
+            zip_folder = self.temp_dir / f"{path.stem}_{unique_id}"
             zip_folder.mkdir(parents=True, exist_ok=True)
 
             with zipfile.ZipFile(path, 'r') as zip_ref:
@@ -29,6 +30,9 @@ class ArchiveParser:
                 # Recursively find all files extracted
                 for file in zip_folder.rglob("*"):
                     if file.is_file():
+                        # Skip hidden files and macOS system folders
+                        if file.name.startswith('.') or '__MACOSX' in file.parts:
+                            continue
                         extracted_files.append(file)
             
             print(f"📦 Unzipped {path.name}: found {len(extracted_files)} files.")
