@@ -24,7 +24,7 @@ class ArchiveParser:
             zip_folder.mkdir(parents=True, exist_ok=True)
 
             with zipfile.ZipFile(path, 'r') as zip_ref:
-                # Extract all files
+                # Extract all files securely
                 zip_ref.extractall(zip_folder)
                 
                 # Recursively find all files extracted

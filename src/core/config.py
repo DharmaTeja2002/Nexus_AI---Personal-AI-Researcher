@@ -19,8 +19,12 @@ class Settings(BaseSettings):
     OUTPUT_DIR: Path = BASE_DIR / "data" / "output"
     TEMP_DIR: Path = BASE_DIR / "data" / "temp"
 
-    # API Keys (We provide defaults as None)
+    # API Keys & LLM Settings
+    LLM_PROVIDER: str = "local" # 'local', 'openai', or 'groq'
     OPENAI_API_KEY: str | None = None
+    GROQ_API_KEY: str | None = None
+    LOCAL_LLM_URL: str = "http://172.30.64.1:11434/v1" # Windows Host IP for WSL
+    LOCAL_LLM_MODEL: str = "qwen2.5:3b" # The specific local model to use
     
     # This tells Pydantic to look for a file named .env in the root folder
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")

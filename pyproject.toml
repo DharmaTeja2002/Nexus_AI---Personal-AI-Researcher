@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "asyncpg>=0.31.0",
     "camelot-py[cv]>=1.0.9",
+    "fastapi>=0.136.1",
     "moviepy>=1.0.3",
     "openai-whisper>=20250625",
     "opencv-python>=4.13.0.92",
@@ -27,6 +28,11 @@ dependencies = [
     "python-pptx>=1.0.2",
     "sentence-transformers>=5.4.1",
     "sqlalchemy>=2.0.49",
+    "uvicorn>=0.47.0",
+    "openai>=1.14.0",
+    "python-multipart>=0.0.9",
+    "streamlit>=1.58.0",
+    "requests>=2.33.1",
 ]
 
 

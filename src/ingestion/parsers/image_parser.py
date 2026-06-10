@@ -13,6 +13,7 @@ class ImageParser:
         try:
             # 1. Load the image using Pillow
             img = Image.open(path)
+            image_format = img.format
             
             # 2. Pre-processing for better OCR accuracy
             # Convert to grayscale (L mode) to remove color noise
@@ -34,7 +35,7 @@ class ImageParser:
                     metadata={
                         "method": "tesseract_ocr",
                         "image_size": img.size,
-                        "format": img.format
+                        "format": image_format
                     }
                 )
             ]

@@ -1,11 +1,12 @@
 from typing import Dict, Any
 from sqlalchemy import Integer, Text
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import declarative_base, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from pgvector.sqlalchemy import Vector
 from pydantic import BaseModel, Field
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 class NexusMemory(Base):
     """

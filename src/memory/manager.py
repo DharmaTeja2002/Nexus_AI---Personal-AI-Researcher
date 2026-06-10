@@ -39,6 +39,7 @@ class MemoryManager:
         logger.info(f"📦 Found {len(elements)} elements to index.")
 
         batch_size = 100
+        total_batches = (len(elements) + batch_size - 1) // batch_size
         for i in range(0, len(elements), batch_size):
             batch = elements[i : i + batch_size]
             
@@ -60,6 +61,6 @@ class MemoryManager:
             
             # 4. Save to Postgres asynchronously
             await self.db.add_documents(db_ready_data)
-            logger.info(f"✅ Indexed batch {i // batch_size + 1}/{(len(elements)//batch_size)+1}")
+            logger.info(f"✅ Indexed batch {i // batch_size + 1}/{total_batches}")
 
         logger.info("🎉 Memory Bank Indexing Complete!")
