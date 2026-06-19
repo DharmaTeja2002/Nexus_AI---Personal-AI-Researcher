@@ -1,20 +1,21 @@
 import logging
 from typing import List
-from sentence_transformers import SentenceTransformer
+from fastembed import TextEmbedding
 
 logger = logging.getLogger(__name__)
 
 class NexusEmbedder:
     """
-    The Translator: Converts raw text into mathematical vectors.
+    The Translator: Converts raw text into mathematical vectors without PyTorch!
     """
-    def __init__(self, model_name: str = "all-MiniLM-L6-v2"):
-        logger.info(f"🧠 Loading Embedding Model: {model_name}...")
-        self.model = SentenceTransformer(model_name)
-        logger.info("✅ Embedding Model Loaded.")
+    def __init__(self, model_name: str = "sentence-transformers/all-MiniLM-L6-v2"):
+        logger.info(f"🧠 Loading FastEmbed Model: {model_name}...")
+        self.model = TextEmbedding(model_name)
+        logger.info("✅ FastEmbed Model Loaded.")
 
     def embed_text(self, text: str) -> List[float]:
-        return self.model.encode(text).tolist()
+        # fastembed returns a generator of numpy arrays
+        return list(self.model.embed([text]))[0].tolist()
 
     def embed_batch(self, texts: List[str]) -> List[List[float]]:
-        return self.model.encode(texts).tolist()
+        return [arr.tolist() for arr in list(self.model.embed(texts))]
