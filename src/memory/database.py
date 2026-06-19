@@ -13,8 +13,12 @@ class NexusVectorStore:
     """
     def __init__(self):
         # We must use asyncpg driver for asynchronous SQLAlchemy
-        db_url = f"postgresql+asyncpg://{settings.DB_USER}:{settings.DB_PASS}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
-        
+        if settings.DATABASE_URL:
+            db_url = settings.DATABASE_URL
+            if db_url.startswith("postgresql://"):
+                db_url = db_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        else:
+            db_url = f"postgresql+asyncpg://{settings.DB_USER}:{settings.DB_PASS}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
         self.engine = create_async_engine(db_url, echo=False)
         self.async_session = async_sessionmaker(
             self.engine, class_=AsyncSession, expire_on_commit=False

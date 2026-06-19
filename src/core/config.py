@@ -37,6 +37,7 @@ class Settings(BaseSettings):
     DB_NAME: str = "nexus_db"
     DB_USER: str = "nexus_user"
     DB_PASS: str = "nexus_pass"
+    DATABASE_URL: str | None = None
     
 # We create one single instance of settings to be used across the whole app
 settings = Settings()
