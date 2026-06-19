@@ -8,7 +8,8 @@
 ![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)
 ![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-blue.svg)
 ![pgvector](https://img.shields.io/badge/Vector-pgvector-green.svg)
-![Asyncio](https://img.shields.io/badge/Concurrency-Asyncio-orange.svg)
+![FastAPI](https://img.shields.io/badge/Backend-FastAPI-teal.svg)
+![Streamlit](https://img.shields.io/badge/Frontend-Streamlit-red.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ---
@@ -29,189 +30,100 @@ Nexus_AI is not just a chatbot; it is a **complete intelligence refinery**. The 
 Nexus_AI is engineered in modular stages to ensure production-grade stability:
 
 - **Part 1 (The Senses):**  
-  A high-performance multimodal ingestion engine that extracts signals from noise across 14+ data formats  
+  A high-performance multimodal ingestion engine that extracts signals from noise across 14+ data formats.
 
 - **Part 2 (The Memory):**  
-  A hybrid vector memory bank using `pgvector` for sub-millisecond semantic retrieval  
+  A hybrid vector memory bank using `pgvector` for sub-millisecond semantic retrieval.
 
-- **The Future (The Brain & Hands):**  
-  Moving toward **Agentic Orchestration (LangGraph)**, where the system not only answers questions but executes complex workflows  
-  *(e.g., “Analyze this PDF and send a summary email to the CEO”)*  
+- **Part 3 (The Brain & API):**  
+  A robust FastAPI backend that routes queries to powerful LLMs (like Groq) and performs Retrieval-Augmented Generation (RAG).
 
----
-
-### 🧾 Final Result
-An autonomous, end-to-end system that transforms any corporate file into a trigger for AI-driven action
+- **Part 4 (The Face & Deployment):**  
+  A beautiful, interactive Streamlit Web UI deployed using a **100% Zero-Cost Cloud Architecture** (Supabase, Render, Streamlit Cloud).
 
 ---
 
 ## 🧬 Deep Dive: Engineering Implementation
 
----
-
 ### 🧩 Part 1: The Multimodal Ingestion Engine
 
-The goal was to build a **"Universal Translator"** for data.
-
-Instead of relying on simple file-extension checks, we implemented:
-👉 **Binary Magic-Byte Detection using `python-magic`**
-
----
-
-### 📊 Data Format Coverage
-
-We support **14+ formats**, categorized as:
-
-- **Documents:** PDF, DOCX, PPTX, TXT, MD  
-- **Tabular:** CSV, XLSX  
-- **Vision:** JPG, PNG, TIFF  
-- **Media:** MP3, WAV, MP4, MKV  
-- **Archives:** ZIP  
-
----
+We built a **"Universal Translator"** for data, supporting **14+ formats** including Documents (PDF, TXT), Tabular (CSV), Vision (JPG), Media (MP3, MP4), and Archives (ZIP).
 
 #### ⚠️ Challenges & Engineering Solutions
 | Format | The Technical Challenge | The Engineering Solution |
 | :--- | :--- | :--- |
-| **PDF** | Tables are often read as jumbled text strings, losing all meaning. | Implemented a **Hybrid Approach**: `PyMuPDF` for text and `Camelot` for tabular linearization. |
-| **Images** | Low contrast and noise make OCR inaccurate. | Integrated `Tesseract-OCR` with `Pillow` pre-processing to normalize images before extraction. |
-| **Media** | Massive file sizes leading to RAM crashes during transcription. | Used `MoviePy` to extract raw audio streams and `OpenAI Whisper` for time-stamped, high-fidelity transcription. |
-| **Office** | Data is buried in complex, nested XML schemas. | Used `python-docx` and `python-pptx` to recursively traverse the XML tree to extract structured paragraphs. |
-| **Tabular** | LLMs struggle with raw comma-separated values in large files. | Used `Pandas` to convert DataFrames into **pipe-separated strings**, which preserves structural integrity for embeddings. |
-| **Archives** | Recursive "Zip-Bombs" (folders inside folders). | Built a **Recursive Unpacker** using `zipfile` that feeds discovered files back into the dispatcher. |
+| **PDF** | Tables are often read as jumbled text strings. | **Hybrid Approach**: `PyMuPDF` for text and `Camelot` for tabular linearization. |
+| **Media** | Massive ML models crashing local RAM. | **Cloud Offloading**: Replaced local Whisper with **Groq's Cloud Whisper API** (`whisper-large-v3`) via async HTTP streaming. |
+| **Archives** | Recursive "Zip-Bombs". | Built a **Recursive Unpacker** using `zipfile` that feeds discovered files back into the dispatcher. |
 
 ---
 
-### ⚙️ Why This Tech Stack?
+### 🧠 Part 2: The Hybrid Memory Bank
 
-- **`asyncio` vs Threading**  
-  Used `asyncio` with a `Semaphore(5)` throttle to prevent system crashes under heavy I/O workloads  
-
-- **`uv` vs pip**  
-  Chosen for deterministic, ultra-fast dependency resolution and reproducibility  
-
-- **`Pydantic` vs dicts**  
-  Enforces strict schema validation, ensuring consistent output (`DocumentElement`) regardless of input type  
+#### 🚀 The Technology Choice: PostgreSQL + pgvector + Supabase
+Bypassed purely vector databases (Pinecone, Chroma) for:
+1. **ACID Compliance:** Strict consistency.
+2. **Hybrid Querying:** Metadata filtering + vector search in **one single SQL query**.
+3. **Zero Vendor Lock-in:** Open-source extension, currently hosted entirely for free on **Supabase**.
 
 ---
 
-## 🧠 Part 2: The Hybrid Memory Bank
+### 🌐 Part 3: Zero-Cost Cloud Deployment Architecture
 
-The goal was to design a storage system that is both:
-- **Relational** (metadata handling)  
-- **Semantic** (meaning representation)  
+To make this project portfolio-ready and live 24/7 without spending a dime, we engineered a **Zero-Cost Cloud Architecture**:
 
----
+1. **LLM Inference (Groq):** Used Groq's free tier for blazing-fast Llama-3 inference and Whisper audio transcription, integrated via Base URL overrides in the OpenAI SDK.
+2. **Database (Supabase):** Hosted our PostgreSQL + `pgvector` database on Supabase's generous free tier.
+3. **Backend API (Render):** Deployed the FastAPI server to Render, with CORS middleware enabled to allow secure cross-origin requests.
+4. **Frontend UI (Streamlit Cloud):** Built a stateful chat interface (`st.session_state`) and deployed it directly from GitHub using Streamlit Community Cloud.
 
-#### 🚀 The Technology Choice: Why PostgreSQL + pgvector?
-I bypassed popular "Vector-Only" databases (like Pinecone, Milvus, or Chroma) for these specific reasons:
-1. **ACID Compliance:** Corporate data requires strict consistency. Postgres ensures no data loss.
-2. **Hybrid Querying:** I can filter by metadata (e.g., *"Find documents from User X in 2023"*) and perform a vector search in **one single SQL query**.
-3. **Zero Vendor Lock-in:** By using an open-source extension, the system remains portable and cost-effective.
-4. **Raw SQL Performance:** I used **Raw SQL** instead of an ORM (SQLAlchemy) to utilize the `<=>` (cosine distance) operator directly, reducing latency by avoiding abstraction overhead.
 ---
 
 ## 🛠️ Tech Stack Checklist
 
 ### ✅ Completed Modules
 
-- [x] **Part 1: Multimodal Ingestion Engine**  
-  (`PyMuPDF`, `Whisper`, `Tesseract`, `Asyncio`, `python-magic`)  
-
-- [x] **Part 2: Hybrid Memory Bank**  
-  (`PostgreSQL 16`, `pgvector`, `Sentence-Transformers`)  
-
----
+- [x] **Part 1: Multimodal Ingestion Engine** (`PyMuPDF`, `Groq Whisper`, `python-magic`)  
+- [x] **Part 2: Hybrid Memory Bank** (`PostgreSQL`, `pgvector`, `Supabase`)  
+- [x] **Part 3: Secure API Gateway** (`FastAPI`, `CORS Middleware`, `Uvicorn`)  
+- [x] **Part 4: Generative Brain** (`OpenAI SDK`, `Groq Llama-3.1`)  
+- [x] **Part 5: Frontend UI** (`Streamlit`, `st.session_state`, `Requests`)  
+- [x] **Part 6: Cloud Deployment** (`Render`, `Streamlit Cloud`, `GitHub Integration`)  
 
 ### ⏳ Future Modules
 
-- [ ] **Part 3: Secure API Gateway**  
-  (FastAPI, JWT Auth, Rate Limiting)  
-
-- [ ] **Part 4: Agentic Brain**  
-  (LangGraph, Multi-LLM Routing, Tool Calling)  
-
-- [ ] **Part 5: Observability Layer**  
-  (Langfuse, Prometheus, Grafana)  
-
-- [ ] **Part 6: Advanced RAG**  
-  (Hybrid Search, Cross-Encoder Reranking)  
-
-- [ ] **Part 7: MCP Integration**  
-  (Model Context Protocol for tool connectivity)  
-
-- [ ] **Part 8: Cloud Scale**  
-  (Docker, Kubernetes, Terraform)  
+- [ ] **Part 7: Agentic Orchestration** (LangGraph workflows, Tool Calling)  
+- [ ] **Part 8: Advanced RAG** (Cross-Encoder Reranking)  
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Local Development)
 
-### 1. System Dependencies (Ubuntu / WSL)
-
-```bash
-sudo apt update
-sudo apt install postgresql postgresql-contrib build-essential git tesseract-ocr libtesseract-dev ffmpeg
+### 1. Set Up Environment Variables
+Create a `.env` file in the root directory:
+```env
+LLM_PROVIDER="groq"
+GROQ_API_KEY="gsk_your_key_here"
+DATABASE_URL="postgresql://postgres.[YOUR-PROJECT]:[YOUR-PASSWORD]@aws-0-region.pooler.supabase.com:6543/postgres"
 ```
 
----
-
-### 2. Vector Database Setup
-
+### 2. Install Dependencies
 ```bash
-# Install pgvector
-git clone --branch v0.7.0 https://github.com/pgvector/pgvector.git
-cd pgvector
-make
-sudo make install
-
-# Configure database
-sudo -i -u postgres psql -c "CREATE USER nexus_user WITH PASSWORD 'nexus_pass';"
-sudo -i -u postgres psql -c "CREATE DATABASE nexus_db OWNER nexus_user;"
-sudo -i -u postgres psql -d nexus_db -c "CREATE EXTENSION vector;"
-```
-
----
-
-### 3. Run the Engine
-
-```bash
-# Clone repository
-git clone https://github.com/your-username/Nexus_AI.git
-cd Nexus_AI
-
-# Install dependencies
+# We use 'uv' for lightning-fast Python package management
 uv sync
-
-# Setup environment variables
-echo "DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=nexus_db
-DB_USER=nexus_user
-DB_PASS=nexus_pass" > .env
-
-# Run pipeline
-uv run run_ingestion.py
 ```
 
----
+### 3. Run the Stack (Two Terminals)
 
-## 📖 Usage
+**Terminal 1 (Backend):**
+```bash
+uv run uvicorn src.api.server:app --reload
+```
 
-- **Input:**  
-  Drop any combination of PDF, MP4, ZIP, or DOCX files into the input directory  
+**Terminal 2 (Frontend):**
+```bash
+uv run streamlit run frontend/app.py
+```
 
-- **Processing Pipeline:**  
-  UnifiedIngestor → Detect MIME type → Extract content → Generate embeddings  
-
-- **Query:**  
-  Perform semantic search using the memory manager  
-
-- **Example Query:**  
-  "What are the risk factors mentioned in the financial report?"  
-
-- **Result:**  
-  Retrieves the exact paragraph from a 50-page PDF using semantic similarity  
-
-  ## 📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.# Nexus_AI
+## 📄 License
+This project is licensed under the MIT License - see the LICENSE file for details.
